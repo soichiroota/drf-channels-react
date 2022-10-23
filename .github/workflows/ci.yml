@@ -1,0 +1,15 @@
+name: CI on PR
+on: pull_request
+jobs:
+  ci-on-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up
+        run: make docker-build
+      - name: Install dependencies
+        run: make docker-poetry-install
+      - name: Lint
+        run: make docker-lint
+      - name: Test
+        run: make docker-test

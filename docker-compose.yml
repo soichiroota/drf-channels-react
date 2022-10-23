@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:12
+    ports:
+      - "5432"
+    env_file:
+      - envs/.env.db.local
+  redis:
+    image: "redis:alpine"
+    expose:
+      - "6379"
+  backend:
+    build:
+      context: ./backend
+    command: >
+      poetry run
+      uvicorn config.asgi:application
+      --host 0.0.0.0 --reload
+    volumes:
+      - ./backend:/opt/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - envs/.env.backend.local
